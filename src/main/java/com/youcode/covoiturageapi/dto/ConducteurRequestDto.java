@@ -1,0 +1,19 @@
+package com.youcode.covoiturageapi.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record ConducteurRequestDto (
+
+        @NotBlank(message = "Le nom est obligatoire")
+        String nom,
+        @NotBlank(message = "Le prenom est obligatoire")
+        String prenom,
+        @NotBlank(message = "L'email est obligatoire")
+        @Email(message = "Format d'email invalide")
+        String email,
+        @NotBlank(message = "Le téléphone est obligatoire")
+        String telephone,
+        @NotBlank(message = "Le numéro de permis est obligatoire")
+        String numeroPermis
+){}
