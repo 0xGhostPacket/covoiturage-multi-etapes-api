@@ -122,7 +122,7 @@ public class GlobalExceptionHandler {
                 "Une erreur interne inattendue est survenue"
         );
 
-        problem.setTitle("Erreur interne");
+        problem.setTitle("Erreur interne.");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;
