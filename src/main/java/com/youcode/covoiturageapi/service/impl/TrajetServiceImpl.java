@@ -18,10 +18,13 @@ import com.youcode.covoiturageapi.repository.VehiculeRepository;
 import com.youcode.covoiturageapi.service.TrajetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -196,5 +199,22 @@ public class TrajetServiceImpl implements TrajetService {
         log.info("Trajet #{} annulé avec succès", id);
 
         return trajetMapper.toResponseDto(saved);
+    }
+
+    // SEARCH TRIPS
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TrajetResponseDto> search(String villeDepart, String villeArrivee, LocalDate date, Pageable pageable) {
+        LocalDateTime debutJournee = date.atStartOfDay();
+        LocalDateTime finJournee = date.plusDays(1).atStartOfDay();
+        Page<Trajet> trajets = trajetRepository.searchTrajets(
+                villeDepart,
+                villeArrivee,
+                StatutTrajet.PUBLIE,
+                debutJournee,
+                finJournee,
+                pageable
+        );
+        return trajets.map(trajetMapper::toResponseDto);
     }
 }

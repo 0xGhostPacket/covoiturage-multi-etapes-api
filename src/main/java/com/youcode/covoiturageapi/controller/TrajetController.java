@@ -5,10 +5,15 @@ import com.youcode.covoiturageapi.dto.TrajetResponseDto;
 import com.youcode.covoiturageapi.service.TrajetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,5 +52,17 @@ public class TrajetController {
     @PatchMapping("/{id}/annuler")
     public ResponseEntity<TrajetResponseDto> annuler(@PathVariable Long id) {
         return ResponseEntity.ok(trajetService.annuler(id));
+    }
+
+    // 6. Search trips by departure city, arrival city, and date (Scenario 2)
+    @GetMapping("/search")
+    public ResponseEntity<Page<TrajetResponseDto>> search(
+            @RequestParam String depart,
+            @RequestParam String arrivee,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PageableDefault(size = 10, sort = "dateDepart") Pageable pageable) {
+
+        Page<TrajetResponseDto> results = trajetService.search(depart, arrivee, date, pageable);
+        return ResponseEntity.ok(results);
     }
 }
